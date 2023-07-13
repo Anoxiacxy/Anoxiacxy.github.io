@@ -1,0 +1,49 @@
+[
+	{
+		"id": "http://zotero.org/users/11001318/items/YK5YUFVW",
+		"type": "paper-conference",
+		"abstract": "The 3D scene reconstruction task is the basis for implementing mixed reality, but traditional single-image scene reconstruction algorithms are difficult to generate regularized models. It is believed that this situation is caused by a lack of prior knowledge, so we try to introduce the model collection ShapeNet <sup>1</sup> to solve this problem. Besides, our approach incorporates traditional model generation algorithms. The predicted artificial indoor objects as indicators will match models in ShapeNet. The refined models selected from ShapeNet will then replace the rough ones to produce the final 3D scene. These selected models from the model library will greatly improve the aesthetics of the reconstructed 3D scene. We test our method on the NYU-v2 <sup>2</sup> dataset and achieve pleasing results. Our project is publicly available at https://sjtu-cv- 2021.github.io/Single-Image-3D-Reconstruction-Based-On-ShapeNet.",
+		"container-title": "Fourteenth International Conference on Digital Image Processing (ICDIP 2022)",
+		"DOI": "10.1117/12.2645274",
+		"event-title": "Fourteenth International Conference on Digital Image Processing (ICDIP 2022)",
+		"language": "en-US",
+		"license": "All rights reserved",
+		"page": "323-328",
+		"publisher": "SPIE",
+		"source": "www.spiedigitallibrary.org",
+		"title": "Single image 3D scene reconstruction based on ShapeNet models",
+		"volume": "12342",
+		"author": [
+			{
+				"family": "Chen",
+				"given": "Xueyang"
+			},
+			{
+				"family": "Ren",
+				"given": "Yifan"
+			},
+			{
+				"family": "Song",
+				"given": "Yaoxu"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2023",
+					2,
+					1
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2022",
+					10,
+					12
+				]
+			]
+		}
+	}
+]
