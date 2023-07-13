@@ -2,41 +2,53 @@
 /* Hugo-Cite.css
 /* ----------------------------------------------------------------------------- */
 
+.hugo-cite-bibliography dl dt {
+  font-weight: bolder;
+  margin-top: 1rem
+}
+
+.hugo-cite-bibliography dl dd {
+  margin-inline-start: 0;
+  margin-bottom: 1rem
+}
+
 .hugo-cite-group {
   display: inline-block;
-  vertical-align: baseline; /*compensate for lower height */
+  vertical-align: baseline;
+  /*compensate for lower height */
   position: relative;
-  font-size: .85em; /* reduce to avoid some breaks */
+  font-size: .85em;
+  /* reduce to avoid some breaks */
 }
-.hugo-cite-group
-  .hugo-cite-citation {
-    visibility: hidden;
-    background-color: #ffffff;
-    color: inherit;
-    border: 1px solid currentColor;
-    padding: 1rem;
-    position: absolute;
-    width: 350px;
-    max-width: 100vw;
-    z-index: 1;
-    bottom: 140%;
-    left: 0;
-    margin-left: -50px;
 
-    z-index: 2;
-    transition:
-      visibility 0s .3s,
-      transform .3s ease 0s,
-      opacity .3s ease 0s;
-    opacity: 0;
-    transform: translateY(-8px);
+.hugo-cite-group .hugo-cite-citation {
+  visibility: hidden;
+  background-color: #ffffff;
+  color: inherit;
+  border: 1px solid currentColor;
+  padding: 1rem;
+  position: absolute;
+  width: 350px;
+  max-width: 100vw;
+  z-index: 1;
+  bottom: 140%;
+  left: 0;
+  margin-left: -50px;
+
+  z-index: 2;
+  transition:
+    visibility 0s .3s,
+    transform .3s ease 0s,
+    opacity .3s ease 0s;
+  opacity: 0;
+  transform: translateY(-8px);
 }
-.hugo-cite-group:hover
-  .hugo-cite-citation {
-    visibility: visible;
-    transition: visibility 0s 0s, transform .3s, opacity .3s;
-    opacity: 1;
-    transform: translateY(0);
+
+.hugo-cite-group:hover .hugo-cite-citation {
+  visibility: visible;
+  transition: visibility 0s 0s, transform .3s, opacity .3s;
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* Visually Hidden utility class */
