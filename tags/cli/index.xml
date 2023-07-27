@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>cli on Anoxiacxy's Blog</title><link>https://anoxiacxy.github.io/tags/cli/</link><description>Recent content in cli on Anoxiacxy's Blog</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Sun, 10 Dec 2017 00:00:00 +0000</lastBuildDate><atom:link href="https://anoxiacxy.github.io/tags/cli/index.xml" rel="self" type="application/rss+xml"/><item><title>CLI Greedy Snake</title><link>https://anoxiacxy.github.io/projects/greedysnake/</link><pubDate>Sun, 10 Dec 2017 00:00:00 +0000</pubDate><guid>https://anoxiacxy.github.io/projects/greedysnake/</guid><description>总览 # 以上已经给出了有关此程序的效果图和流程图，虽然与实际程序稍有差异，但也八九不离十了。 关于此次贪吃蛇的制作，主要还是为了锻炼一下代码能力，也就相当于一个超级大模拟吧。 具体相当于要实现以下功能
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>cli on Anoxiacxy's Blog</title><link>https://anoxiacxy.github.io/tags/cli/</link><description>Recent content in cli on Anoxiacxy's Blog</description><generator>Hugo -- gohugo.io</generator><language>en</language><copyright>© 2023 XUEYANG CHEN</copyright><lastBuildDate>Sun, 10 Dec 2017 00:00:00 +0000</lastBuildDate><atom:link href="https://anoxiacxy.github.io/tags/cli/index.xml" rel="self" type="application/rss+xml"/><item><title>CLI Greedy Snake</title><link>https://anoxiacxy.github.io/projects/greedysnake/</link><pubDate>Sun, 10 Dec 2017 00:00:00 +0000</pubDate><guid>https://anoxiacxy.github.io/projects/greedysnake/</guid><description>总览 # 以上已经给出了有关此程序的效果图和流程图，虽然与实际程序稍有差异，但也八九不离十了。 关于此次贪吃蛇的制作，主要还是为了锻炼一下代码能力，也就相当于一个超级大模拟吧。 具体相当于要实现以下功能
 游戏实现 # 游戏的主体部分，即有关地图的加载，蛇身的移动，游戏结束的判定等等，地图由文件形式存储，可以自己DIY哈
 菜单界面 # 其实，这个玩意才最难搞，我写了个 Button 类，专门来处理有关这些菜单按钮的界面，然后疯狂调参，把按钮们放在一个合适的位置
 分数统计 # 为永久保存历史记录与排行榜，可以开一个文件，把战绩都保存在里面，然后每次更新文件里的内容即可
@@ -7,4 +7,4 @@
 这个时候可以上下键选择，空格或者回车键确认，即可进入相应的选项，先直接开始游戏
 选择一个模式，选择的方法同上
 注意，游戏时请将输入法切换成英文，同时尽可能使用 WASD 而不是键盘右侧的上下左右，减少一些不明原因带来的延迟现象
-同时，空格键还有暂停的功能，再次点击即可继续游戏（本来打算再写个暂停的界面的，但因问没 (bo) 时 (zhu) 间 (lan) ，就放弃了）</description></item></channel></rss>
+同时，空格键还有暂停的功能，再次点击即可继续游戏（本来打算再写个暂停的界面的，但因问没 (bo) 时 (zhu) 间 (lan) ，就放弃了）</description><media:content xmlns:media="http://search.yahoo.com/mrss/" url="https://anoxiacxy.github.io/projects/greedysnake/feature.png"/></item></channel></rss>
