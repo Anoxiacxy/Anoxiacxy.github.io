@@ -1,0 +1,1410 @@
+<!DOCTYPE html>
+<!-- saved from url=(0071)https://cosc204.cspages.otago.ac.nz/4-bit-cpu-simulator/dist/index.html -->
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>4-bit CPU</title>
+  <script type="module" crossorigin="" src="./assets/index.cbd1ba3f.js"></script>
+  <link rel="stylesheet" href="./assets/index.d29f4cc2.css">
+  <style>
+    @-webkit-keyframes spin {
+      0% {
+        -webkit-transform: rotate(0deg);
+      }
+
+      100% {
+        -webkit-transform: rotate(360deg);
+      }
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    input.bito-email-input:-webkit-autofill,
+    input.bito-email-input:-webkit-autofill:hover,
+    input.bito-email-input:-webkit-autofill:focus {
+      -webkit-text-fill-color: rgb(255, 255, 255);
+      transition: background-color 5000s ease-in-out 0s;
+    }
+
+    #bito-body::-webkit-scrollbar,
+    #emptyDiv-inner::-webkit-scrollbar,
+    #loginParentDiv-outer::-webkit-scrollbar {
+      width: 4px;
+      border-radius: 24px;
+      color: #7a8084;
+    }
+
+    #bito-body::-webkit-scrollbar-thumb,
+    #emptyDiv-inner::-webkit-scrollbar-thumb,
+    #loginParentDiv-outer::-webkit-scrollbar-thumb {
+      background: #888;
+    }
+
+    #bito-body::-webkit-scrollbar-thumb:hover,
+    #emptyDiv-inner::-webkit-scrollbar-thumb:hover,
+    #loginParentDiv-outer::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+
+    .login-network-error-container {
+      padding: 10px 16px 8px;
+      color: rgb(255 0 0);
+    }
+
+    #loader {
+      background-color: #00000085;
+      position: absolute;
+      width: 100%;
+      top: 0px;
+      left: 0px;
+      height: 300px;
+      align-items: center;
+      justify-content: center;
+      display: grid;
+      z-index: 3002;
+      opacity: 9999;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 1.5rem;
+      height: 1.5rem;
+      vertical-align: text-bottom;
+      border: 1.75px solid #fff;
+      border-right-color: transparent;
+      border-radius: 50%;
+      animation: spinner-border .75s linear infinite;
+      margin-top: -30px
+    }
+
+    @keyframes spinner-border {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="root">
+    <div>
+      <div>
+        <h2>💡 Tutorial</h2>
+        <p>Click the bits in the <b>Interactive Nibble</b> below, observe how <i>Hex</i> and <i>Dec</i> change.</p>
+        <h3>1. Interactive Nibble</h3>
+        <table>
+          <tbody>
+            <tr>
+              <td>
+                <div class="undefined">
+                  <div class="register-bits">
+                    <div class="bit-status">
+                      <div class="bit zero" title="Click to flip bit">0</div>
+                      <div class="bit-status-label">8</div>
+                    </div>
+                    <div class="bit-status">
+                      <div class="bit zero" title="Click to flip bit">0</div>
+                      <div class="bit-status-label">4</div>
+                    </div>
+                    <div class="bit-status">
+                      <div class="bit zero" title="Click to flip bit">0</div>
+                      <div class="bit-status-label">2</div>
+                    </div>
+                    <div class="bit-status">
+                      <div class="bit zero" title="Click to flip bit">0</div>
+                      <div class="bit-status-label">1</div>
+                    </div>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="seven-seg" title="Number Display
+bin 0000
+dec 00
+hex 0">
+                  <div class="">00</div>
+                </div><span class="bit-status-label">Decimal</span>
+              </td>
+              <td>
+                <div class="seven-seg" title="Number Display
+bin 0000
+dec 00
+hex 0">
+                  <div class="">0</div>
+                </div><span class="bit-status-label">Hex</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <h3>2. Machine Code</h3>
+        <p>Programs for this CPU are written in machine code. Each machine code instruction is 1 byte (8 bits). The
+          first 4 bits are the <b>opcode</b>, and the last 4 bits are the <b>operand</b>.</p>
+        <p>Only some instructions use the operand bits.</p>
+        <table>
+          <thead>
+            <tr>
+              <th>Instruction</th>
+              <th>Description</th>
+              <th>Opcode</th>
+              <th>Operand</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code class="asm" title="Assembly Instruction
+STOP 
+bin 0000 0000
+hex 00"><code class="asm-opcode">STOP</code><code class="asm-addr"> </code></code></td>
+              <td>Halts the CPU.</td>
+              <td>
+                <div class="seven-seg" title="Number Display
+bin 0000
+dec 00
+hex 0">
+                  <div class="">0</div>
+                </div>
+              </td>
+              <td></td>
+            </tr>
+            <tr>
+              <td><code class="asm" title="Assembly Instruction
+STA $0
+bin 0001 0000
+hex 10"><code class="asm-opcode">STA</code><code class="asm-addr"> $0</code></code></td>
+              <td>Store the accumulator into the given <span class="asm-addr">memory address</span>.</td>
+              <td>
+                <div class="seven-seg" title="Number Display
+bin 0001
+dec 01
+hex 1">
+                  <div class="">1</div>
+                </div>
+              </td>
+              <td>Hex Address</td>
+            </tr>
+            <tr>
+              <td><code class="asm" title="Assembly Instruction
+LDA $0
+bin 0010 0000
+hex 20"><code class="asm-opcode">LDA</code><code class="asm-value"> #$0</code></code></td>
+              <td>Load the given <span class="asm-value">value</span> into the accumulator.</td>
+              <td>
+                <div class="seven-seg" title="Number Display
+bin 0010
+dec 02
+hex 2">
+                  <div class="">2</div>
+                </div>
+              </td>
+              <td>Hex Value</td>
+            </tr>
+            <tr>
+              <td><code class="asm" title="Assembly Instruction
+LDA $0
+bin 0011 0000
+hex 30"><code class="asm-opcode">LDA</code><code class="asm-addr"> $0</code></code></td>
+              <td>Load the value at <span class="asm-addr">memory address</span> into the accumulator.</td>
+              <td>
+                <div class="seven-seg" title="Number Display
+bin 0011
+dec 03
+hex 3">
+                  <div class="">3</div>
+                </div>
+              </td>
+              <td>Hex Address</td>
+            </tr>
+            <tr>
+              <td><code class="asm" title="Assembly Instruction
+ADDA $0
+bin 0100 0000
+hex 40"><code class="asm-opcode">ADDA</code><code class="asm-value"> #$0</code></code></td>
+              <td>Add the given <span class="asm-value">value</span> to the accumulator.</td>
+              <td>
+                <div class="seven-seg" title="Number Display
+bin 0100
+dec 04
+hex 4">
+                  <div class="">4</div>
+                </div>
+              </td>
+              <td>Hex Value</td>
+            </tr>
+            <tr>
+              <td><code class="asm" title="Assembly Instruction
+DECA 
+bin 0110 0000
+hex 60"><code class="asm-opcode">DECA</code><code class="asm-addr"> </code></code></td>
+              <td>Decrement the accumulator by one.</td>
+              <td>
+                <div class="seven-seg" title="Number Display
+bin 0110
+dec 06
+hex 6">
+                  <div class="">6</div>
+                </div>
+              </td>
+              <td></td>
+            </tr>
+            <tr>
+              <td><code class="asm" title="Assembly Instruction
+IN 
+bin 1000 0000
+hex 80"><code class="asm-opcode">IN</code><code class="asm-addr"> </code></code></td>
+              <td>Read a value from the keypad and load it into the accumulator.</td>
+              <td>
+                <div class="seven-seg" title="Number Display
+bin 1000
+dec 08
+hex 8">
+                  <div class="">8</div>
+                </div>
+              </td>
+              <td></td>
+            </tr>
+            <tr>
+              <td><code class="asm" title="Assembly Instruction
+OUT 
+bin 1010 0000
+hex A0"><code class="asm-opcode">OUT</code><code class="asm-addr"> </code></code></td>
+              <td>Print the value of the accumulator.</td>
+              <td>
+                <div class="seven-seg" title="Number Display
+bin 1010
+dec 10
+hex A">
+                  <div class="">A</div>
+                </div>
+              </td>
+              <td></td>
+            </tr>
+            <tr>
+              <td><code class="asm" title="Assembly Instruction
+BRA $0
+bin 1100 0000
+hex C0"><code class="asm-opcode">BRA</code><code class="asm-addr"> $0</code></code></td>
+              <td>Branch to the given <span class="asm-addr">memory address</span> (and continue execution).</td>
+              <td>
+                <div class="seven-seg" title="Number Display
+bin 1100
+dec 12
+hex C">
+                  <div class="">C</div>
+                </div>
+              </td>
+              <td>Hex Address</td>
+            </tr>
+            <tr>
+              <td><code class="asm" title="Assembly Instruction
+BEQ $0
+bin 1110 0000
+hex E0"><code class="asm-opcode">BEQ</code><code class="asm-addr"> $0</code></code></td>
+              <td>Branch to the given <span class="asm-addr">memory address</span> if the accumulator is zero.</td>
+              <td>
+                <div class="seven-seg" title="Number Display
+bin 1110
+dec 14
+hex E">
+                  <div class="">E</div>
+                </div>
+              </td>
+              <td>Hex Address</td>
+            </tr>
+          </tbody>
+        </table>
+        <p>Below is an interactive byte. Click the bits to change the opcode and operand.</p>
+        <table>
+          <thead>
+            <tr>
+              <th>Opcode</th>
+              <th>Operand</th>
+              <th>Hex</th>
+              <th>Assembly</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td colspan="2">
+                <div class="undefined">
+                  <div class="register-bits">
+                    <div class="bit-status">
+                      <div class="bit zero" title="Click to flip bit">0</div>
+                      <div class="bit-status-label">128</div>
+                    </div>
+                    <div class="bit-status">
+                      <div class="bit zero" title="Click to flip bit">0</div>
+                      <div class="bit-status-label">64</div>
+                    </div>
+                    <div class="bit-status">
+                      <div class="bit zero" title="Click to flip bit">0</div>
+                      <div class="bit-status-label">32</div>
+                    </div>
+                    <div class="bit-status">
+                      <div class="bit zero" title="Click to flip bit">0</div>
+                      <div class="bit-status-label">16</div>
+                    </div>
+                    <div class="bit-status">
+                      <div class="bit zero" title="Click to flip bit">0</div>
+                      <div class="bit-status-label">8</div>
+                    </div>
+                    <div class="bit-status">
+                      <div class="bit zero" title="Click to flip bit">0</div>
+                      <div class="bit-status-label">4</div>
+                    </div>
+                    <div class="bit-status">
+                      <div class="bit zero" title="Click to flip bit">0</div>
+                      <div class="bit-status-label">2</div>
+                    </div>
+                    <div class="bit-status">
+                      <div class="bit zero" title="Click to flip bit">0</div>
+                      <div class="bit-status-label">1</div>
+                    </div>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="seven-seg" title="Number Display
+bin 0000 0000
+dec 000
+hex 00">
+                  <div class="">00</div>
+                </div><span class="bit-status-label">Hex</span>
+              </td>
+              <td><code class="asm" title="Assembly Instruction
+STOP 
+bin 0000 0000
+hex 00"><code class="asm-opcode">STOP</code><code class="asm-addr"> </code></code><span
+                  class="bit-status-label">Instruction</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <p>Below is the full CPU simulator.</p>
+      </div>
+      <div class="App">
+        <div class="layout-cpu">
+          <h2>🤖 CPU</h2>
+          <div class="button-panel">
+            <div class="bit-status">
+              <div class="bit zero" title="Read only">0</div>
+              <div class="bit-status-label">run</div>
+            </div><button title="Start/stop CPU execution."
+              class="pushy__btn pushy__btn--md pushy__btn--blue">Run</button><button title="Execute 1 instruction."
+              class="pushy__btn pushy__btn--md pushy__btn--blue">Step</button><button title="Set all registers to 0."
+              class="pushy__btn pushy__btn--md pushy__btn--blue">Reset</button>
+            <div class="slidecontainer" title="Adjust CPU clock speed.">⏱️<span>3</span><input type="range" min="1"
+                max="5" class="slider" id="myRange" value="3"></div>
+          </div>
+          <div class="cpu-view">
+            <div class="side-by-side">
+              <fieldset class="register program-counter">
+                <legend>Program Counter</legend><span>👉</span>
+                <div class="undefined">
+                  <div class="register-bits">
+                    <div class="bit zero" title="Click to flip bit">0</div>
+                    <div class="bit zero" title="Click to flip bit">0</div>
+                    <div class="bit zero" title="Click to flip bit">0</div>
+                    <div class="bit zero" title="Click to flip bit">0</div>
+                  </div>
+                </div>
+                <div class="seven-seg" title="Number Display
+bin 0000
+dec 00
+hex 0">
+                  <div class="">0</div>
+                </div>
+              </fieldset>
+              <fieldset class="register accumulator">
+                <legend>Accumulator</legend>
+                <div class="undefined">
+                  <div class="register-bits">
+                    <div class="bit zero" title="Click to flip bit">0</div>
+                    <div class="bit zero" title="Click to flip bit">0</div>
+                    <div class="bit zero" title="Click to flip bit">0</div>
+                    <div class="bit zero" title="Click to flip bit">0</div>
+                  </div>
+                </div>
+                <div class="seven-seg" title="Number Display
+bin 0000
+dec 00
+hex 0">
+                  <div class="">0</div>
+                </div>
+              </fieldset>
+            </div>
+            <fieldset class="register instruction">
+              <legend>Instruction Register</legend>
+              <div class="undefined">
+                <div class="register-bits">
+                  <div class="bit zero" title="Read only">0</div>
+                  <div class="bit zero" title="Read only">0</div>
+                  <div class="bit zero" title="Read only">0</div>
+                  <div class="bit zero" title="Read only">0</div>
+                  <div class="bit zero" title="Read only">0</div>
+                  <div class="bit zero" title="Read only">0</div>
+                  <div class="bit zero" title="Read only">0</div>
+                  <div class="bit zero" title="Read only">0</div>
+                </div>
+              </div>
+              <div class="seven-seg" title="Number Display
+bin 0000 0000
+dec 000
+hex 00">
+                <div class="">00</div>
+              </div><code class="asm" title="Assembly Instruction
+STOP 
+bin 0000 0000
+hex 00"><code class="asm-opcode">STOP</code><code class="asm-addr"> </code></code>
+            </fieldset>
+          </div>
+        </div>
+        <div class="layout-printer">
+          <h2>🖨️ Output</h2>
+          <div class="printer-buttons"><button title="Switch printing mode."
+              class="pushy__btn pushy__btn--md pushy__btn--blue">Mode: Hex</button><button title="Clear output."
+              class="pushy__btn pushy__btn--md pushy__btn--blue">Reset</button></div>
+          <p class="output"></p>
+          <p>This printer accepts 4-bit values and prints in either decimal or hex encoding.</p>
+        </div>
+        <div class="layout-kb">
+          <h2>⌨️ Input</h2>
+          <div class="kb-panel">
+            <div class="undefined">
+              <div class="register-bits">
+                <div class="bit zero" title="Read only">0</div>
+                <div class="bit zero" title="Read only">0</div>
+                <div class="bit zero" title="Read only">0</div>
+                <div class="bit zero" title="Read only">0</div>
+              </div>
+            </div><button class="pushy__btn pushy__btn--md pushy__btn--blue">Reset</button>
+          </div>
+          <div class="kbpad"><button class="pushy__btn pushy__btn--md pushy__btn--blue">0</button><button
+              class="pushy__btn pushy__btn--md pushy__btn--blue">1</button><button
+              class="pushy__btn pushy__btn--md pushy__btn--blue">2</button><button
+              class="pushy__btn pushy__btn--md pushy__btn--blue">3</button><button
+              class="pushy__btn pushy__btn--md pushy__btn--blue">4</button><button
+              class="pushy__btn pushy__btn--md pushy__btn--blue">5</button><button
+              class="pushy__btn pushy__btn--md pushy__btn--blue">6</button><button
+              class="pushy__btn pushy__btn--md pushy__btn--blue">7</button><button
+              class="pushy__btn pushy__btn--md pushy__btn--blue">8</button><button
+              class="pushy__btn pushy__btn--md pushy__btn--blue">9</button><button
+              class="pushy__btn pushy__btn--md pushy__btn--blue">A</button><button
+              class="pushy__btn pushy__btn--md pushy__btn--blue">B</button><button
+              class="pushy__btn pushy__btn--md pushy__btn--blue">C</button><button
+              class="pushy__btn pushy__btn--md pushy__btn--blue">D</button><button
+              class="pushy__btn pushy__btn--md pushy__btn--blue">E</button><button
+              class="pushy__btn pushy__btn--md pushy__btn--blue">F</button></div>
+          <p>This keypad outputs 4-bit values. The labels are in Hex, where A-F are 10-15 in decimal.</p>
+        </div>
+        <div class="layout-memory">
+          <h2>🗄️ Memory</h2>
+          <div class="memory"><span class="memoryTitle"><span>Address</span><span>Data</span><span>
+              </span><span>Display</span></span>
+            <div class="pc">
+              <div class="pc-arrow">👉</div><span class="addr">
+                <div class="seven-seg" title="Number Display
+bin 0000
+dec 00
+hex 0">
+                  <div class="">0</div>
+                </div>
+              </span>
+              <div class="undefined">
+                <div class="register-bits">
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                </div>
+              </div>
+              <div class="seven-seg" title="Number Display
+bin 0000 0000
+dec 000
+hex 00">
+                <div class="">00</div>
+              </div><code class="asm" title="Assembly Instruction
+STOP 
+bin 0000 0000
+hex 00"><code class="asm-opcode">STOP</code><code class="asm-addr"> </code></code>
+            </div>
+            <div class="">
+              <div class="pc-arrow"></div><span class="addr">
+                <div class="seven-seg" title="Number Display
+bin 0001
+dec 01
+hex 1">
+                  <div class="">1</div>
+                </div>
+              </span>
+              <div class="undefined">
+                <div class="register-bits">
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                </div>
+              </div>
+              <div class="seven-seg" title="Number Display
+bin 0000 0000
+dec 000
+hex 00">
+                <div class="">00</div>
+              </div><code class="asm" title="Assembly Instruction
+STOP 
+bin 0000 0000
+hex 00"><code class="asm-opcode">STOP</code><code class="asm-addr"> </code></code>
+            </div>
+            <div class="">
+              <div class="pc-arrow"></div><span class="addr">
+                <div class="seven-seg" title="Number Display
+bin 0010
+dec 02
+hex 2">
+                  <div class="">2</div>
+                </div>
+              </span>
+              <div class="undefined">
+                <div class="register-bits">
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                </div>
+              </div>
+              <div class="seven-seg" title="Number Display
+bin 0000 0000
+dec 000
+hex 00">
+                <div class="">00</div>
+              </div><code class="asm" title="Assembly Instruction
+STOP 
+bin 0000 0000
+hex 00"><code class="asm-opcode">STOP</code><code class="asm-addr"> </code></code>
+            </div>
+            <div class="">
+              <div class="pc-arrow"></div><span class="addr">
+                <div class="seven-seg" title="Number Display
+bin 0011
+dec 03
+hex 3">
+                  <div class="">3</div>
+                </div>
+              </span>
+              <div class="undefined">
+                <div class="register-bits">
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                </div>
+              </div>
+              <div class="seven-seg" title="Number Display
+bin 0000 0000
+dec 000
+hex 00">
+                <div class="">00</div>
+              </div><code class="asm" title="Assembly Instruction
+STOP 
+bin 0000 0000
+hex 00"><code class="asm-opcode">STOP</code><code class="asm-addr"> </code></code>
+            </div>
+            <div class="">
+              <div class="pc-arrow"></div><span class="addr">
+                <div class="seven-seg" title="Number Display
+bin 0100
+dec 04
+hex 4">
+                  <div class="">4</div>
+                </div>
+              </span>
+              <div class="undefined">
+                <div class="register-bits">
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                </div>
+              </div>
+              <div class="seven-seg" title="Number Display
+bin 0000 0000
+dec 000
+hex 00">
+                <div class="">00</div>
+              </div><code class="asm" title="Assembly Instruction
+STOP 
+bin 0000 0000
+hex 00"><code class="asm-opcode">STOP</code><code class="asm-addr"> </code></code>
+            </div>
+            <div class="">
+              <div class="pc-arrow"></div><span class="addr">
+                <div class="seven-seg" title="Number Display
+bin 0101
+dec 05
+hex 5">
+                  <div class="">5</div>
+                </div>
+              </span>
+              <div class="undefined">
+                <div class="register-bits">
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                </div>
+              </div>
+              <div class="seven-seg" title="Number Display
+bin 0000 0000
+dec 000
+hex 00">
+                <div class="">00</div>
+              </div><code class="asm" title="Assembly Instruction
+STOP 
+bin 0000 0000
+hex 00"><code class="asm-opcode">STOP</code><code class="asm-addr"> </code></code>
+            </div>
+            <div class="">
+              <div class="pc-arrow"></div><span class="addr">
+                <div class="seven-seg" title="Number Display
+bin 0110
+dec 06
+hex 6">
+                  <div class="">6</div>
+                </div>
+              </span>
+              <div class="undefined">
+                <div class="register-bits">
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                </div>
+              </div>
+              <div class="seven-seg" title="Number Display
+bin 0000 0000
+dec 000
+hex 00">
+                <div class="">00</div>
+              </div><code class="asm" title="Assembly Instruction
+STOP 
+bin 0000 0000
+hex 00"><code class="asm-opcode">STOP</code><code class="asm-addr"> </code></code>
+            </div>
+            <div class="">
+              <div class="pc-arrow"></div><span class="addr">
+                <div class="seven-seg" title="Number Display
+bin 0111
+dec 07
+hex 7">
+                  <div class="">7</div>
+                </div>
+              </span>
+              <div class="undefined">
+                <div class="register-bits">
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                </div>
+              </div>
+              <div class="seven-seg" title="Number Display
+bin 0000 0000
+dec 000
+hex 00">
+                <div class="">00</div>
+              </div><code class="asm" title="Assembly Instruction
+STOP 
+bin 0000 0000
+hex 00"><code class="asm-opcode">STOP</code><code class="asm-addr"> </code></code>
+            </div>
+            <div class="">
+              <div class="pc-arrow"></div><span class="addr">
+                <div class="seven-seg" title="Number Display
+bin 1000
+dec 08
+hex 8">
+                  <div class="">8</div>
+                </div>
+              </span>
+              <div class="undefined">
+                <div class="register-bits">
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                </div>
+              </div>
+              <div class="seven-seg" title="Number Display
+bin 0000 0000
+dec 000
+hex 00">
+                <div class="">00</div>
+              </div><code class="asm" title="Assembly Instruction
+STOP 
+bin 0000 0000
+hex 00"><code class="asm-opcode">STOP</code><code class="asm-addr"> </code></code>
+            </div>
+            <div class="">
+              <div class="pc-arrow"></div><span class="addr">
+                <div class="seven-seg" title="Number Display
+bin 1001
+dec 09
+hex 9">
+                  <div class="">9</div>
+                </div>
+              </span>
+              <div class="undefined">
+                <div class="register-bits">
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                </div>
+              </div>
+              <div class="seven-seg" title="Number Display
+bin 0000 0000
+dec 000
+hex 00">
+                <div class="">00</div>
+              </div><code class="asm" title="Assembly Instruction
+STOP 
+bin 0000 0000
+hex 00"><code class="asm-opcode">STOP</code><code class="asm-addr"> </code></code>
+            </div>
+            <div class="">
+              <div class="pc-arrow"></div><span class="addr">
+                <div class="seven-seg" title="Number Display
+bin 1010
+dec 10
+hex A">
+                  <div class="">A</div>
+                </div>
+              </span>
+              <div class="undefined">
+                <div class="register-bits">
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                </div>
+              </div>
+              <div class="seven-seg" title="Number Display
+bin 0000 0000
+dec 000
+hex 00">
+                <div class="">00</div>
+              </div><code class="asm" title="Assembly Instruction
+STOP 
+bin 0000 0000
+hex 00"><code class="asm-opcode">STOP</code><code class="asm-addr"> </code></code>
+            </div>
+            <div class="">
+              <div class="pc-arrow"></div><span class="addr">
+                <div class="seven-seg" title="Number Display
+bin 1011
+dec 11
+hex B">
+                  <div class="">B</div>
+                </div>
+              </span>
+              <div class="undefined">
+                <div class="register-bits">
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                </div>
+              </div>
+              <div class="seven-seg" title="Number Display
+bin 0000 0000
+dec 000
+hex 00">
+                <div class="">00</div>
+              </div><code class="asm" title="Assembly Instruction
+STOP 
+bin 0000 0000
+hex 00"><code class="asm-opcode">STOP</code><code class="asm-addr"> </code></code>
+            </div>
+            <div class="">
+              <div class="pc-arrow"></div><span class="addr">
+                <div class="seven-seg" title="Number Display
+bin 1100
+dec 12
+hex C">
+                  <div class="">C</div>
+                </div>
+              </span>
+              <div class="undefined">
+                <div class="register-bits">
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                </div>
+              </div>
+              <div class="seven-seg" title="Number Display
+bin 0000 0000
+dec 000
+hex 00">
+                <div class="">00</div>
+              </div><code class="asm" title="Assembly Instruction
+STOP 
+bin 0000 0000
+hex 00"><code class="asm-opcode">STOP</code><code class="asm-addr"> </code></code>
+            </div>
+            <div class="">
+              <div class="pc-arrow"></div><span class="addr">
+                <div class="seven-seg" title="Number Display
+bin 1101
+dec 13
+hex D">
+                  <div class="">D</div>
+                </div>
+              </span>
+              <div class="undefined">
+                <div class="register-bits">
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                </div>
+              </div>
+              <div class="seven-seg" title="Number Display
+bin 0000 0000
+dec 000
+hex 00">
+                <div class="">00</div>
+              </div><code class="asm" title="Assembly Instruction
+STOP 
+bin 0000 0000
+hex 00"><code class="asm-opcode">STOP</code><code class="asm-addr"> </code></code>
+            </div>
+            <div class="">
+              <div class="pc-arrow"></div><span class="addr">
+                <div class="seven-seg" title="Number Display
+bin 1110
+dec 14
+hex E">
+                  <div class="">E</div>
+                </div>
+              </span>
+              <div class="undefined">
+                <div class="register-bits">
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                </div>
+              </div>
+              <div class="seven-seg" title="Number Display
+bin 0000 0000
+dec 000
+hex 00">
+                <div class="">00</div>
+              </div><code class="asm" title="Assembly Instruction
+STOP 
+bin 0000 0000
+hex 00"><code class="asm-opcode">STOP</code><code class="asm-addr"> </code></code>
+            </div>
+            <div class="">
+              <div class="pc-arrow"></div><span class="addr">
+                <div class="seven-seg" title="Number Display
+bin 1111
+dec 15
+hex F">
+                  <div class="">F</div>
+                </div>
+              </span>
+              <div class="undefined">
+                <div class="register-bits">
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                  <div class="bit zero" title="Click to flip bit">0</div>
+                </div>
+              </div>
+              <div class="seven-seg" title="Number Display
+bin 0000 0000
+dec 000
+hex 00">
+                <div class="">00</div>
+              </div><code class="asm" title="Assembly Instruction
+STOP 
+bin 0000 0000
+hex 00"><code class="asm-opcode">STOP</code><code class="asm-addr"> </code></code>
+            </div>
+          </div>
+          <div class="example-button-panel"><button title="Set all memory to 0."
+              class="pushy__btn pushy__btn--md pushy__btn--blue">Reset Memory</button></div>
+        </div>
+      </div>
+      <div>
+        <h2>💡 Basic Programs</h2>
+        <h3>1. Countdown Program</h3>
+        <p>Below is a simple program.</p>
+        <code>A = 15 <br>do <br>&nbsp; print A <br>&nbsp; A = A – 1 <br>while (A != 0) <br></code>
+        <p>The above program as machine code.</p>
+        <table class="asm-table">
+          <thead>
+            <tr>
+              <th>Label</th>
+              <th>Address</th>
+              <th>Instruction</th>
+              <th>Comments</th>
+              <th>Hex</th>
+              <th>Machine Code</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code class="asm">&nbsp;</code></td>
+              <td>
+                <div class="seven-seg" title="Number Display
+bin 0000
+dec 00
+hex 0">
+                  <div class="">0</div>
+                </div>
+              </td>
+              <td><code class="asm" title="Assembly Instruction
+LDA $F
+bin 0010 1111
+hex 2F"><code class="asm-opcode">LDA</code><code class="asm-value"> #$F</code></code></td>
+              <td><code class="asm">; A = <span class="asm-value">F</span></code></td>
+              <td>
+                <div class="seven-seg" title="Number Display
+bin 0010 1111
+dec 047
+hex 2F">
+                  <div class="">2F</div>
+                </div>
+              </td>
+              <td>0010 1111</td>
+            </tr>
+            <tr>
+              <td><code class="asm"><span class="asm-addr">LOOP</span>: </code></td>
+              <td>
+                <div class="seven-seg" title="Number Display
+bin 0001
+dec 01
+hex 1">
+                  <div class="">1</div>
+                </div>
+              </td>
+              <td><code class="asm" title="Assembly Instruction
+OUT 
+bin 1010 0000
+hex A0"><code class="asm-opcode">OUT</code><code class="asm-addr"> </code></code></td>
+              <td><code class="asm">; Print A</code></td>
+              <td>
+                <div class="seven-seg" title="Number Display
+bin 1010 0000
+dec 160
+hex A0">
+                  <div class="">A0</div>
+                </div>
+              </td>
+              <td>1010 0000</td>
+            </tr>
+            <tr>
+              <td><code class="asm">&nbsp;</code></td>
+              <td>
+                <div class="seven-seg" title="Number Display
+bin 0010
+dec 02
+hex 2">
+                  <div class="">2</div>
+                </div>
+              </td>
+              <td><code class="asm" title="Assembly Instruction
+DECA 
+bin 0110 0000
+hex 60"><code class="asm-opcode">DECA</code><code class="asm-addr"> </code></code></td>
+              <td><code class="asm">; A = A – 1</code></td>
+              <td>
+                <div class="seven-seg" title="Number Display
+bin 0110 0000
+dec 096
+hex 60">
+                  <div class="">60</div>
+                </div>
+              </td>
+              <td>0110 0000</td>
+            </tr>
+            <tr>
+              <td><code class="asm">&nbsp;</code></td>
+              <td>
+                <div class="seven-seg" title="Number Display
+bin 0011
+dec 03
+hex 3">
+                  <div class="">3</div>
+                </div>
+              </td>
+              <td><code class="asm" title="Assembly Instruction
+BEQ $5
+bin 1110 0101
+hex E5"><code class="asm-opcode">BEQ</code><code class="asm-addr"> $5</code></code></td>
+              <td><code class="asm">; if (A == 0) goto <span class="asm-addr">END</span></code></td>
+              <td>
+                <div class="seven-seg" title="Number Display
+bin 1110 0101
+dec 229
+hex E5">
+                  <div class="">E5</div>
+                </div>
+              </td>
+              <td>1110 0101</td>
+            </tr>
+            <tr>
+              <td><code class="asm">&nbsp;</code></td>
+              <td>
+                <div class="seven-seg" title="Number Display
+bin 0100
+dec 04
+hex 4">
+                  <div class="">4</div>
+                </div>
+              </td>
+              <td><code class="asm" title="Assembly Instruction
+BRA $1
+bin 1100 0001
+hex C1"><code class="asm-opcode">BRA</code><code class="asm-addr"> $1</code></code></td>
+              <td><code class="asm">; goto <span class="asm-addr">LOOP</span></code></td>
+              <td>
+                <div class="seven-seg" title="Number Display
+bin 1100 0001
+dec 193
+hex C1">
+                  <div class="">C1</div>
+                </div>
+              </td>
+              <td>1100 0001</td>
+            </tr>
+            <tr>
+              <td><code class="asm"><span class="asm-addr">END</span>: </code></td>
+              <td>
+                <div class="seven-seg" title="Number Display
+bin 0101
+dec 05
+hex 5">
+                  <div class="">5</div>
+                </div>
+              </td>
+              <td><code class="asm" title="Assembly Instruction
+STOP 
+bin 0000 0000
+hex 00"><code class="asm-opcode">STOP</code><code class="asm-addr"> </code></code></td>
+              <td><code class="asm">; halt</code></td>
+              <td>
+                <div class="seven-seg" title="Number Display
+bin 0000 0000
+dec 000
+hex 00">
+                  <div class="">00</div>
+                </div>
+              </td>
+              <td>0000 0000</td>
+            </tr>
+          </tbody>
+        </table>
+        <p>Program the instructions into memory, and click run!</p>
+      </div>
+    </div>
+  </div>
+
+
+
+  <div id="torrent-scanner-popup" style="display: none;"><template shadowrootmode="open">
+      <link rel="stylesheet" href="chrome-extension://aegnopegbbhjeeiganiajffnalhlkkjb/css/custom.css">
+      <div id="yf-bt-wrapper" class="free">
+        <div class="header"><img class="sts-logo"
+            src="chrome-extension://aegnopegbbhjeeiganiajffnalhlkkjb/img/assets/ts-free-logo.png">
+          <div class="search-content"><input id="search-input" class="search-input" type="search"
+              placeholder="Start your search here..."><span id="search-btn" class="search-btn"></span></div>
+        </div>
+        <div class="container">
+          <div class="main-container">
+            <div id="torrent-data" class="torrent-content">
+              <div class="t-table">
+                <div class="t-header">
+                  <div class="t-name">Torrent search results</div>
+                </div>
+                <div id="checked-sites" class="checked-sites-section">
+                  <div class="left">Checked Sites</div>
+                  <div class="right"><span id="sites-count" class="sites-count">0</span></div>
+                </div>
+                <div id="table-body" class="t-body">
+                  <div id="loading" class="spinner">
+                    <div class="bounce1"></div>
+                    <div class="bounce2"></div>
+                    <div class="bounce3"></div>
+                  </div>
+                  <div class="table-message-container" id="table-message">
+                    <p>No items to list <br> Use the search bar above for instant results</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="tooltip">
+              <p class="tooltip-text">To see search results, type here and hit `Enter`</p>
+            </div>
+            <div class="footer"><span><span id="numberScanned" class="numberScanned">No results</span></span></div>
+            <div class="upgradeProPanel">
+              <div class="upgradeProPanelTitle">Try our Pro Versions to unlock:</div>
+              <div class="upgradeProPanelList">
+                <div>
+                  <p>Faster Results</p>
+                </div>
+                <div>
+                  <p>Secure Torrenting</p>
+                </div>
+                <div>
+                  <p>Unlimited Search Results with detailed torrent info</p>
+                </div>
+                <div>
+                  <p>1-YR Subscription to CyberGhost VPN <span style="font-size:8px;">(PRO+VPN only)</span></p>
+                </div>
+              </div><a class="upgrade-to-pro-button-2" id="buy-pro-vpn"
+                href="https://www.utorrent.com/webpro-offer/?utm_source=Lavasoft&amp;utm_medium=version_1.0&amp;utm_campaign=Scanner"
+                target="_blank">BUY PRO + VPN</a><a class="upgrade-to-pro-button-2" id="buy-pro"
+                href="https://www.utorrent.com/webpro-offer/?utm_source=Lavasoft&amp;utm_medium=version_1.0&amp;utm_campaign=Scanner"
+                target="_blank">BUY PRO</a>
+            </div>
+          </div>
+          <div class="sync-container nav-se-container">
+            <div class="nav-se-content"><img class="sync-icon nav-se-icon"
+                src="chrome-extension://aegnopegbbhjeeiganiajffnalhlkkjb/img/assets/icon-sync.svg">
+              <div class="nav-se-title">One more step to go before you start torrenting!</div>
+              <p class="nav-se-text">This extension can sync results with BitTorrent and/or uTorrent for instant
+                downloading.</p>
+              <p class="nav-se-text">To activate this feature, please click on the button below, and then on the Chrome
+                message to activate the 'Messaging Permission'.</p><button
+                class="sync-permission-btn nav-se-btn">Activate Messaging Permission</button>
+            </div>
+            <div class="nav-se-content display-none"><img class="sync-icon nav-se-icon"
+                src="chrome-extension://aegnopegbbhjeeiganiajffnalhlkkjb/img/assets/icon-sync.svg">
+              <div class="nav-se-title">Syncing...</div>
+              <p class="nav-se-text">Please allow Messaging Permissions in the proceeding Chrome message.</p>
+            </div>
+            <div class="nav-se-content display-none"><img class="sync-icon nav-se-icon"
+                src="chrome-extension://aegnopegbbhjeeiganiajffnalhlkkjb/img/assets/icon-success.svg">
+              <div class="nav-se-title">Sync Complete</div>
+              <p class="nav-se-text">You have successfully activated the “Messaging Permission” feature. All your search
+                results will sync with BitTorrent and/or uTorrent.</p>
+            </div>
+          </div>
+          <div class="license-container nav-se-container">
+            <div class="nav-se-content"><img class="nav-se-icon"
+                src="chrome-extension://aegnopegbbhjeeiganiajffnalhlkkjb/img/assets/icon-key2.svg">
+              <div class="nav-se-title">Enter License Key</div>
+              <p class="nav-se-text">Enter your license key and click on the activate button to start using
+                <span>µTorrent Web Pro.</span></p><input type="text" id="license-input-key" class="license-input-key"
+                placeholder="Enter Key">
+              <div class="license-spinner">
+                <div class="bounce1"></div>
+                <div class="bounce2"></div>
+                <div class="bounce3"></div>
+              </div><button id="license-activate-button" class="license-activate-button nav-se-btn">Activate</button>
+              <p>Don't have a license key? <a class="license-buy-link" target="_blank">Click here</a></p>
+            </div>
+            <div class="nav-se-content display-none"><img class="nav-se-icon"
+                src="chrome-extension://aegnopegbbhjeeiganiajffnalhlkkjb/img/assets/icon-success.svg">
+              <div class="nav-se-title">Happy Torrenting!</div>
+              <p class="nav-se-text">You are now an active PRO user</p>
+              <p class="nav-se-text">Your key is valid until <span class="expiry-date"></span></p>
+            </div>
+            <div class="nav-se-content display-none"><img class="nav-se-icon"
+                src="chrome-extension://aegnopegbbhjeeiganiajffnalhlkkjb/img/assets/icon-alert.svg">
+              <div class="nav-se-title">Your license key has expired</div>
+              <p class="nav-se-text">Looks like your license key has expired, to renew your PRO license key, please
+                select a license type:</p><a class="upgrade-to-pro-button-2 buy-license-expiry-button"
+                href="https://www.utorrent.com/webpro-offer/?utm_source=Lavasoft&amp;utm_medium=version_1.0&amp;utm_campaign=Scanner"
+                target="_blank">Buy Pro + VPN</a><a class="upgrade-to-pro-button-2 buy-license-expiry-button"
+                href="https://www.utorrent.com/webpro-offer/?utm_source=Lavasoft&amp;utm_medium=version_1.0&amp;utm_campaign=Scanner"
+                target="_blank">Buy Pro</a>
+              <p class="nav-se-text">Already have a license key? <a class="link" id="show-license-panel">Click here</a>
+              </p>
+            </div>
+            <div class="nav-se-content display-none"><img class="nav-se-icon"
+                src="chrome-extension://aegnopegbbhjeeiganiajffnalhlkkjb/img/assets/icon-success.svg">
+              <div class="nav-se-title">Pro User</div>
+              <p class="nav-se-text">Your key is valid until <span class="expiry-date"></span></p>
+              <p class="nav-se-text">Your License Key:</p>
+              <p class="nav-se-text"></p>
+              <p class="nav-se-text margin-top-50">Switch back to Torrent Scanner Free?</p><button
+                class="activate-free-btn nav-se-btn">Revert to Free Version</button>
+            </div>
+          </div>
+          <div class="feedback-container nav-se-container">
+            <div class="nav-se-content"><img class="nav-se-icon"
+                src="chrome-extension://aegnopegbbhjeeiganiajffnalhlkkjb/img/assets/icon-feedback.svg">
+              <div class="nav-se-title">Feedback</div>
+              <p class="nav-se-text">Help us improve Torrent Scanner, send us comments, bugs, feedback, and suggestions.
+              </p><button id="feedback-button" class="feedback-button nav-se-btn">Send Feedback</button>
+            </div>
+          </div>
+          <div class="settings-container nav-se-container">
+            <div class="nav-se-content">
+              <div class="settings-title">Settings</div>
+            </div>
+            <div class="s-table">
+              <div class="s-row">
+                <div class="s-title">FAQ<div class="s-arrow"><span class="arrow-down"></span></div>
+                </div>
+                <div class="s-content faq-content">
+                  <p class="faq-text">FAQ: <a href="chrome-extension://aegnopegbbhjeeiganiajffnalhlkkjb/faq.html"
+                      target="_blank">Click here</a></p>
+                </div>
+              </div>
+              <div class="s-row">
+                <div class="s-title">Rate the extension<div class="s-arrow"><span class="arrow-down"></span></div>
+                </div>
+                <div class="s-content">
+                  <p class="rate-text">How did you like the extension experience?</p>
+                  <div class="rating"><span class="rating-star">★</span><span class="rating-star">★</span><span
+                      class="rating-star">★</span><span class="rating-star">★</span><span class="rating-star">★</span>
+                  </div><button class="rating-btn nav-se-btn" disabled="">Submit</button>
+                </div>
+              </div>
+              <div class="s-row">
+                <div class="s-title">About<div class="s-arrow"><span class="arrow-down"></span></div>
+                </div>
+                <div class="s-content about-content">
+                  <div class="about-version">Version 1.3.0 <br><br> What's New</div>
+                  <div class="about-new">
+                    <p></p>
+                    <ul>
+                      <li>Experience a complete new User Interface of the extension. It is enhanced and user friendly
+                        now.</li>
+                      <li>Squashed some bugs.</li>
+                    </ul>
+                    <p></p>
+                  </div>
+                </div>
+              </div>
+              <div class="s-row">
+                <div class="s-title">Privacy Policy<div class="s-arrow"><span class="arrow-down"></span></div>
+                </div>
+                <div class="s-content">
+                  <div class="policy-text">Adaware Software (7270356 Canada Inc.) is the operator of the Adaware
+                    products suites and related services (the “<b>Company</b>”, ”<b>we</b>” or “<b>us</b>”). We respect
+                    your privacy rights and we are committed to protecting them. This privacy policy (“<b>Privacy
+                      Policy</b>” or simply “<b>policy</b>”) governs our products, services and websites that link to
+                    this Privacy Policy, and describes our practices of processing data from you. By “<b>you</b>”, we
+                    refer to either or all of the following: (i) visitors to our websites that links to this Privacy
+                    Policy (“<b>Visitor</b>” and “<b>Website</b>”, respectively); (ii) our customers using our software
+                    products and Services (“<b>User</b>”); and (c) a business customer, a business partner that has a
+                    contractual relationship with us or a prospective customer that is yet to be engaged in a contract
+                    with us (“Business Customer”). Unless explicitly mentioned otherwise, the information in this
+                    Privacy Policy refers to any and all data subject types (“you” or “your’). <br><br> For the purpose
+                    of this policy, the “<b>Service(s)</b>” shall include any software licensed by the Company,
+                    including features offered by or within the installed software or additional software scripts
+                    available therein (either downloaded from one of our websites, pre-installed on your device,
+                    downloaded through a third party website, obtained on a physical medium, or otherwise), or services
+                    provided through and/or on top such software, services offered on our websites, communication
+                    forums, support services, account operation, updates, enhancements, new features, premium support,
+                    extended guarantees, online version and free versions of a software or additional services or
+                    features as we ay make available from time to time. <br><br> If you are a California resident,
+                    please also see our <a href="https://www.adaware.com/CCPA/" target="_blank">CCPA Notice</a>.
+                    <br><br> <a href="https://www.adaware.com/privacy-policy/" target="_blank">Read more</a></div>
+                </div>
+              </div>
+              <div class="s-row" style="display: none;">
+                <div class="s-title">Contact Us<div class="s-arrow"><span class="arrow-down"></span></div>
+                </div>
+                <div class="s-content">
+                  <div class="contact-text">For any payment and order-related support, please contact us at Email: <a
+                      href="mailto:support@torrentscanner.zendesk.com">support@torrentscanner.zendesk.com</a> or <a
+                      href="mailto:pcsoftwareinfo.com">pcsoftwareinfo.com</a><br><br>Phone: <a
+                      href="https://pcsoftwareinfo.com/contact.aspx" target="_blank">Click here</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="nav"><button id="btnSync" class="nav-btn">Sync</button><button id="btnLicense"
+            class="nav-btn">License</button><button id="btnHome" class="nav-btn">Home</button><button id="btnFeedback"
+            class="nav-btn">Feedback</button><button id="btnSettings" class="nav-btn">Settings</button></div>
+      </div>
+    </template></div>
+</body>
+
+</html>
